@@ -13,76 +13,70 @@ use Symfony\Component\HttpFoundation\Session\Session;
 /**
  * Bind the various Flickering classes to Laravel
  */
-class FlickeringServiceProvider extends ServiceProvider
-{
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
+class FlickeringServiceProvider extends ServiceProvider {
+	/**
+	 * Indicates if loading of the provider is deferred.
+	 *
+	 * @var bool
+	 */
+	protected $defer = true;
 
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->bindCoreClasses();
-        $this->bindClasses();
-    }
+	/**
+	 * Register the service provider.
+	 *
+	 * @return void
+	 */
+	public function register() {
+		$this->bindCoreClasses();
+		$this->bindClasses();
+	}
 
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return array('flickering');
-    }
+	/**
+	 * Get the services provided by the provider.
+	 *
+	 * @return array
+	 */
+	public function provides() {
+		return array('flickering');
+	}
 
-    ////////////////////////////////////////////////////////////////////
-    /////////////////////////// CLASS BINDINGS /////////////////////////
-    ////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////
+	/////////////////////////// CLASS BINDINGS /////////////////////////
+	////////////////////////////////////////////////////////////////////
 
-    /**
-     * Bind the core classes
-     */
-    public function bindCoreClasses()
-    {
-        $this->app->bindIf('request', function () {
-            return HttpRequest::createFromGlobals();
-        }, true);
+	/**
+	 * Bind the core classes
+	 */
+	public function bindCoreClasses() {
+		$this->app->bindIf('request', function () {
+			return HttpRequest::createFromGlobals();
+		}, true);
 
-        $this->app->bindIf('config', function () {
-            $fileloader = new FileLoader(new Filesystem(), __DIR__.'/../config');
+		$this->app->bindIf('config', function () {
+			$fileloader = new FileLoader(new Filesystem(), __DIR__ . '/../config');
 
-            return new Config($fileloader, 'config');
-        }, true);
+			return new Config($fileloader, 'config');
+		}, true);
 
-        $this->app->bindIf('cache', function () {
-            $fileStore = new FileStore(new Filesystem(), __DIR__.'/../../cache');
+		$this->app->bindIf('cache', function () {
+			$fileStore = new FileStore(new Filesystem(), __DIR__ . '/../../cache');
 
-            return new Cache($fileStore);
-        });
+			return new Cache($fileStore);
+		});
 
-        $this->app->bindIf('session', function () {
-            return new Session();
-        }, true);
+		$this->app->bindIf('session', function () {
+			return new Session();
+		}, true);
 
-        // Register config file
-        $this->app['config']->package('anahkiasen/flickering', __DIR__.'/../config');
-    }
 
-    /**
-     * Bind the Rocketeer classes to the Container
-     */
-    public function bindClasses()
-    {
-        $this->app->singleton('flickering', function ($app) {
-            return new Flickering($app);
-        });
-    }
+	}
+
+	/**
+	 * Bind the Rocketeer classes to the Container
+	 */
+	public function bindClasses() {
+		$this->app->singleton('flickering', function ($app) {
+			return new Flickering($app);
+		});
+	}
 }
