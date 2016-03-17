@@ -233,13 +233,7 @@ class Request {
 				return $response;
 			}
 
-			// Parse resulting content
-			switch (array_get($parameters, 'format')) {
-				case 'json':
-					return Parse::fromJSON($response);
-				default:
-					return Parse::fromXML($response);
-			}
+			return json_decode($response, true);
 		});
 	}
 }
